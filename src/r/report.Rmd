@@ -2,7 +2,7 @@
 title: "foo"
 author: "Anonymous"
 knit: (function(inputFile, encoding) { 
-      out_dir <- "../../build/";
+      out_dir <- "../../build";
       rmarkdown::render(inputFile,
                         encoding=encoding, 
                         output_file=file.path(dirname(inputFile), out_dir, 'report.pdf')); })
@@ -11,6 +11,8 @@ output:
     toc: yes
     toc_depth: 1
 urlcolor: blue
+bibliography: "`r here::here('src/tex', 'ref.bib')`"
+csl: https://raw.githubusercontent.com/citation-style-language/styles-distribution/master/acm-siggraph.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -20,4 +22,8 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-foo
+# Introduction
+
+foobar [@2016]
+
+# References
