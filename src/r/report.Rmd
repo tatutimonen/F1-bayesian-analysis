@@ -12,7 +12,6 @@ output:
     toc_depth: 1
 urlcolor: blue
 bibliography: "`r here::here('src/tex', 'ref.bib')`"
-csl: https://raw.githubusercontent.com/citation-style-language/styles-distribution/master/acm-siggraph.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -24,6 +23,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-foobar [@2016]
+It is a well-known fact that motor skills and reflexes of adults deteriorate with age. In this report we explore the relationship between the age and performance of Formula 1 (F1) drivers. We conduct a Bayesian data analysis on F1 data provided by the Ergast Developer API [@ergast]. In particular, we consider three models describing the data: separate, pooled, and hierarchical. The models incorporate weakly priors, and related discussion of choices and sensitivity analysis is provided for each model separately.
 
 # References
