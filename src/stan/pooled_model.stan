@@ -9,7 +9,7 @@ data {
   int<lower=0> N;
   int<lower=0> I[N];
   int<lower=0> max_i;
-  vector[max_i] time[N];
+  vector[N] time[max_i];
 }
 
 
