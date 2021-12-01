@@ -9,13 +9,13 @@ data {
   int<lower=0> N;
   int<lower=0> I[N];
   int<lower=0> max_i;
-  vector[max_i] time[N];
+  vector[N] time[max_i];
 }
 
 
 parameters {
-  real<lower=0> mu[N];
-  real sigma[N];
+  real mu[N];
+  real<lower=0> sigma[N];
 }
 
 
@@ -26,7 +26,6 @@ model {
     for(i in 1:I[j]){
       time[i,j] ~ normal(mu[j], sigma[j]);
     }
-    
   }
 }
 

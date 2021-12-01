@@ -9,30 +9,27 @@ data {
   int<lower=0> N;
   int<lower=0> I[N];
   int<lower=0> max_i;
-  vector[max_i] time[N];
+  vector[N] time[max_i];
+  int driver_id[max_i, N];
+  int driver_count;
 }
 
 
 parameters {
-  real mu;
-  real<lower=0> sigma;
+  real mu[N];
+  real<lower=0> sigma[N];
+  real a[driver_count];
 }
 
 
 model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
-  for(j in 1:N){    
+  a ~ normal(0,10);
+  for(j in 1:N){
     for(i in 1:I[j]){
-      time[i,] ~ normal(mu, sigma);
+      time[i,j] ~ normal(mu[j] + a[driver_id[i,j]], sigma[j]);
     }
   }
-    
 }
 
-generated quantities{
-  real time_pred[N];
-  for(j in 1:N) {
-    time_pred[j] = normal_rng(mu, sigma);
-  }
-}
