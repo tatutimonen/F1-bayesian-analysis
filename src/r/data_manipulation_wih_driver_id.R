@@ -7,12 +7,12 @@ ages = sort(unique(data$age))
 data_differences = c()
 data_ids = c()
 sizes = c()
-data$driverId = mapvalues(data$driverId, unique(data$driverId), 1:length(unique(data$driverId)))
+data$teammateId = mapvalues(data$teammateId, unique(data$teammateId), 1:length(unique(data$teammateId)))
 for (i in ages){
   indices = (data$age)==i
   sizes = c(sizes, length(data$difference[indices]))
   data_differences = c(data_differences, c(data$difference[indices]))
-  data_ids = c(data_ids, c(data$driverId[indices]))
+  data_ids = c(data_ids, c(data$teammateId[indices]))
 }
 
 
