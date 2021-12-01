@@ -27,13 +27,13 @@ It is a well-known fact that motor skills and reflexes of adults deteriorate wit
 
 # Data
 
-The raw data is provided by the [@ergast]. TODO: discuss pre-processing and analysis problem. The same underlying data has been utilized by various authors. For example, [@nigro2021] examines how odds provided by a neural network model fit to a subset of the data fares against officially provided odds. Related to our analysis, the author notes that the age of the winning driver shows a decreasing linear trend. [@jain2020] on the other hand utilizes logistic regression with $F_1$ score to predict whether or not a driver manages to place on podium, i.e., to attain a top-three position. Similar to us, [@vankesteren2021] conducts a Bayesian analysis to model the skill of drivers considering factors including constructor advantages and seasonal constructor form. In contrast, our analysis is solely based on exploring whether or not a driver's age provides meaningful insight on his performance.
+The raw data is provided by the [@ergast]. TODO: discuss pre-processing. Our analysis problem revolves around extracting posterior statistics yielding information about the relationship between a driver's age and performance. An example of such statistic would be the probability that the best age performance-wise lies within a certain range.
+
+The same underlying data has been utilized by various authors. For example, [@nigro2021] examines how odds provided by a neural network model fit to a subset of the data fares against officially provided odds. Related to our analysis, the author notes that the age of the winning driver shows a decreasing linear trend. [@jain2020] on the other hand utilizes logistic regression with $F_1$ score to predict whether or not a driver manages to place on podium, i.e., to attain a top-three position. Similar to us, [@vankesteren2021] conducts a Bayesian analysis. The author models the skill of drivers considering factors including constructor advantages and seasonal constructor form. In contrast, our analysis is solely based on exploring whether or not a driver's age provides meaningful insight on his performance.
 
 # Models
 
 TODO: mathematical and verbal description/rationale of models
-
-
 
 # Weakly Prior Choices
 
