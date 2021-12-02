@@ -10,6 +10,8 @@ data {
   int<lower=0> I[N];
   int<lower=0> max_i;
   vector[N] time[max_i];
+  int driver_id[max_i, N];
+  int driver_count;
 }
 
 
@@ -18,6 +20,7 @@ parameters {
   real<lower=0>  sigma;
   real<lower=0> tau;
   real mu_mean;
+  real a[driver_count];
 }
 
 
@@ -26,9 +29,10 @@ model {
   sigma ~ normal(0,10);     //prior
   tau ~ normal(0,10);
   mu ~ normal(mu_mean, tau);
+  a ~ normal(0,10);
   for(j in 1:N){
     for(i in 1:I[j]){
-      time[i,j] ~ normal(mu[j], sigma);
+      time[i,j] ~ normal(mu[j] + a[driver_id[i,j]], sigma);
     }
     
   }
