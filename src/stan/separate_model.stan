@@ -9,8 +9,9 @@ data {
   int<lower=0> N;
   int<lower=0> I[N];
   int<lower=0> max_i;
-  vector[N] time[max_i];
-  int k[max_i,N];
+  int indices[max_i,N];
+  int total_length;
+  real time[total_length];
 }
 
 
@@ -25,18 +26,18 @@ model {
   sigma ~ normal(0,1);     //prior
   for(j in 1:N){
     for(i in 1:I[j]){
-      time[k[i,j]] ~ normal(mu[j], sigma[j]);
+      time[indices[i,j]] ~ normal(mu[j], sigma[j]);
     }
   }
 }
 
 generated quantities{
   real time_pred[N];
-  vector[N] log_lik[max_i];
+  real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu[j], sigma[j]);
     for (i in 1:I[j]){
-      log_lik[i,j] = normal_lpdf(time[i,j] | mu[j], sigma[j]);
+      log_lik[indices[i,j]] = normal_lpdf(time[indices[i,j]] | mu[j], sigma[j]);
     }
   }
 
