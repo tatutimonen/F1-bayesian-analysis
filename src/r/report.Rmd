@@ -1,11 +1,11 @@
 ---
 title: "foo"
 author: "Anonymous"
-knit: (function(inputFile, encoding) { 
+knit: (function(input_file, encoding) { 
       out_dir <- "../../build";
-      rmarkdown::render(inputFile,
+      rmarkdown::render(input_file,
                         encoding=encoding, 
-                        output_file=file.path(dirname(inputFile), out_dir, 'report.pdf')); })
+                        output_file=file.path(dirname(input_file), out_dir, 'report.pdf')); })
 output: 
   pdf_document: 
     toc: yes

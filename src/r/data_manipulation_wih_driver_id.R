@@ -34,5 +34,6 @@ stan_data <- list(time = data_differences, N = ncol(data_differences), max_i=nro
 #fit <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data, iter=10000)
 #print(fit)
 #loo(fit)
-fit_hierarchical <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data, iter=10000)
+ctrl = list(adapt_delta = 0.999)
+fit_hierarchical <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data, iter=10000, control=ctrl)
 print(fit_hierarchical)

@@ -1,7 +1,7 @@
 library(rstan)
 library(loo)
 library(plyr)
-data = read.csv(file ="data/quali_differences_processed.csv")
+data = read.csv(file ="data/quali_differences_processed.csv")[:10,]
 data = data[order(data$age),]
 ages = sort(unique(data$age))
 data_diff = c()
@@ -26,7 +26,5 @@ for(i in 1:length(sizes)){
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write=TRUE)
 stan_data <- list(time = data_differences, N = ncol(data_differences), max_i=nrow(data_differences), I = sizes)
-fit <- stan(file = "src/stan/hierarchical_model.stan", data = stan_data)
+fit <- stan(file = "src/stan/separate_model.stan", data = stan_data)
 print(fit)
-#loo(fit)
-fit

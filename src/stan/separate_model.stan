@@ -10,21 +10,22 @@ data {
   int<lower=0> I[N];
   int<lower=0> max_i;
   vector[N] time[max_i];
+  int k[max_i,N];
 }
 
 
 parameters {
   real mu[N];
   real<lower=0> sigma[N];
-}
 
+}
 
 model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
   for(j in 1:N){
     for(i in 1:I[j]){
-      time[i,j] ~ normal(mu[j], sigma[j]);
+      time[k[i,j]] ~ normal(mu[j], sigma[j]);
     }
   }
 }
