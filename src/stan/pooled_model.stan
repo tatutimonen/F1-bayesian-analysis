@@ -32,7 +32,12 @@ model {
 
 generated quantities{
   real time_pred[N];
+  vector[N] log_lik[max_i];
   for(j in 1:N) {
     time_pred[j] = normal_rng(mu, sigma);
+    for (i in 1:I[j]){
+     log_lik[i,j] = normal_lpdf(time[i,j] | mu, sigma);
+    }
   }
+
 }
