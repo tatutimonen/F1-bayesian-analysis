@@ -23,7 +23,8 @@ parameters {
 model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
-  for(j in 1:N){
+  for(j in 1:total_length){
+    int k = 0;
     int model_index = age[j]-min_age+1;
     time[j] ~ normal(mu[model_index], sigma[model_index]);
     
@@ -36,9 +37,4 @@ generated quantities{
   for(j in 1:N){
     time_pred[j] = normal_rng(mu[j], sigma[j]);
   }
-  for(j in 1:total_length) {
-    int model_index = age[j]-min_age+1;
-    log_lik[j] = normal_lpdf(time[j] | mu[model_index], sigma[model_index]);
-  }
-
 }
