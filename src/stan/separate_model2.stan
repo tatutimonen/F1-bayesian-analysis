@@ -9,6 +9,7 @@ data {
   int<lower=0> N;
   int total_length;
   real time[total_length];
+  int model_index[total_length];
   int age[total_length];
   int min_age;
 }
@@ -24,10 +25,7 @@ model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
   for(j in 1:total_length){
-    int k = 0;
-    int model_index = age[j]-min_age+1;
-    time[j] ~ normal(mu[model_index], sigma[model_index]);
-    
+    time[j] ~ normal(mu[model_index[j]], sigma[model_index]);
   }
 }
 
