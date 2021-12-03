@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-It is a well-known fact that motor skills and reflexes of adults deteriorate with age. In this report we explore the relationship between the age and performance of Formula One (F1) drivers through Bayesian analysis. In particular, we consider three models: separate, pooled, and hierarchical. The models incorporate weakly priors, and related discussion of choices and sensitivity analysis is provided for each model separately.
+Formula One (F1) is the most prestigious auto racing league in the world. The number of drivers in this racing class is only 20, and those taking part could be considered "the best of the best". Given the fierce level of competition, every attribute of the driver could be considered important. An F1 driver must be at least 18 years of age, that is, the participating racers are all adults. It is a well-known fact that motor skills and reflexes of adults deteriorate with age. In this report we explore the relationship between the age and performance of F1 drivers through Bayesian analysis. In particular, we consider and compare three models: separate, pooled, and hierarchical. The models incorporate weakly priors, and related discussion of choices and sensitivity analysis is provided for each model separately. We further conduct posterior predictive analysis and finally provide a discussion on the models and potential future research.
 
 # Data
 
@@ -33,7 +33,51 @@ The same underlying data has been utilized by various authors. For example, [@ni
 
 # Models
 
-TODO: mathematical and verbal description/rationale of models
+In this section we enumerate and describe the three models we attempt to fit to the data described previously. Let us first define some general prerequisites. Let $N$ denote the size of the dataset. Further, let $\mathcal{I} = \left\{1, 2, \dots, N\right\}$ denote the index set of the dataset, and $\mathcal{A} = \left\{18, 19, \dots, 43\right\}$ the set of driver ages present in the dataset. Now let $\text{age}(\cdot)$ be a mapping from $\mathcal{I}$ to $\mathcal{A}$ yielding the age of the sample at index $i \in \mathcal{I}$.
+
+## Separate
+
+The separate model is formally defined as follows:
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu_{\text{age}(i)}, \sigma_{\text{age}(i)}), \\
+\mu_{\text{age}(i)} &\sim \mathrm{N}(0,1), \\
+\sigma_{\text{age}(i)} &\sim \mathrm{N}(0,1).
+\end{aligned}
+$$
+
+The separate model effectively assumes the defining characteristics of the distribution for $t_i$ are different for each age group.
+
+## Pooled
+
+The pooled model is formally defined as follows:
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu, \sigma), \\
+\mu &\sim \mathrm{N}(0,1), \\
+\sigma &\sim \mathrm{N}(0,1).
+\end{aligned}
+$$
+
+The pooled model simply assumes the characteristics of the distribution generating $t_i$ are independent of driver age.
+
+## Hierarchical
+
+Finally, the hierarchical model is defined as follows:
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu_{\text{age}(i)}, \sigma), \\
+\mu_{\text{age}(i)} &\sim \mathrm{N}(\mu_{\text{unknown}}, \tau), \\
+\mu_{\text{unknown}} &\sim \mathrm{N}(0, 10), \\
+\tau &\sim \mathrm{N}(0, 10), \\
+\sigma &\sim \mathrm{N}(0, 10).
+\end{aligned}
+$$
+
+In the hierarchical model, the variance of the distribution describing $t_i$ is assumed the same for each age group. However, the mean of this distribution is assumed to be dependent on age. The parameters of the distribution yielding the mean of a particular age group are further sampled from the hyperpriors described above.
 
 # Weakly Prior Choices
 
