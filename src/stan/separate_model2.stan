@@ -33,7 +33,6 @@ model {
 
 generated quantities{
   real time_pred[N];
-  real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu[j], sigma[j]);
   }
