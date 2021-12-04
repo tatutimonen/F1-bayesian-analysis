@@ -10,7 +10,7 @@ data {
   int total_length;
   real time[total_length];
   int age[total_length];
-  int min_age;
+  int model_index[total_length];
 }
 
 
@@ -24,16 +24,18 @@ model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
   for(j in 1:total_length){
-    int k = 0;
-    int model_index = age[j]-min_age+1;
-    time[j] ~ normal(mu[model_index], sigma[model_index]);
+    time[j] ~ normal(mu[model_index[j]], sigma[model_index[j]]);
     
   }
 }
 
 generated quantities{
   real time_pred[N];
+  real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu[j], sigma[j]);
+  }
+  for(j in 1:total_length){
+    log_lik[j] =  normal_lpdf(time[j] | mu[model_index[j]], sigma[model_index[j]]);
   }
 }

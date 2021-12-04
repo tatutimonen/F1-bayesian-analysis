@@ -9,15 +9,12 @@ data {
   int<lower=0> N;
   int total_length;
   real time[total_length];
-  int age[total_length];
-  int min_age;
 }
 
 
 parameters {
   real mu;
   real<lower=0> sigma;
-
 }
 
 model {
@@ -28,7 +25,11 @@ model {
 
 generated quantities{
   real time_pred[N];
+  real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu, sigma);
+  }
+  for(j in 1:total_length){
+    log_lik[j] =  normal_lpdf(time[j] | mu, sigma);
   }
 }

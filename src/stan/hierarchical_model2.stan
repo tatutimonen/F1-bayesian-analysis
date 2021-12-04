@@ -11,7 +11,6 @@ data {
   real time[total_length];
   int age[total_length];
   int model_index[total_length];
-  int min_age;
   
 }
 
@@ -28,7 +27,7 @@ model {
   sigma ~ normal(0,1);     //prior
   tau ~ normal(0,1);       //prior
   mu ~ normal(mu_mean, tau);
-  for(j in 1:N){
+  for(j in 1:total_length){
     time[j] ~ normal(mu[model_index[j]], sigma);
     
   }
@@ -36,7 +35,11 @@ model {
 
 generated quantities{
   real time_pred[N];
+  real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu[j], sigma);
+  }
+  for(j in 1:total_length){
+    log_lik[j] = normal_lpdf(time[j] | mu[model_index[j]], sigma);
   }
 }
