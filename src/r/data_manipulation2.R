@@ -6,6 +6,7 @@ data = read.csv(file ="data/quali_differences_processed.csv")
 data$teammateId = mapvalues(data$teammateId, unique(data$teammateId), 1:length(unique(data$teammateId)))
 data$model_index = data$age-18+1
 
+
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write=TRUE)
 
@@ -20,7 +21,6 @@ fit_hierarchical <- stan(file = "src/stan/hierarchical_model2.stan", data = stan
 fit_pooled <- stan(file = "src/stan/pooled_model2.stan", data = stan_data)
 
 fit_separate_id <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
-
 
 
 llfun <- function(data_i, draws) {
@@ -38,3 +38,4 @@ loo_mat_hierarchical <- loo(extract_log_lik(fit_hierarchical))
 loo_mat_pooled <- loo(extract_log_lik(fit_pooled))
 
 loo_mat_separate_id <- loo(extract_log_lik(fit_separate_id))
+
