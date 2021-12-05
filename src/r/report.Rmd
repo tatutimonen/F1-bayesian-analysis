@@ -93,7 +93,7 @@ TODO: Stan codes here
 
 # Convergence Evaluation
 
-...
+According to [@vehtari2021], in the context of MCMC sampling, it is prudent to run at least four chains, which Stan performs by default. The authors further guide to accept the sample on the condition that $\widehat{R} < 1.05$, which we observe here.
 
 # Posterior Predictive Checks
 
