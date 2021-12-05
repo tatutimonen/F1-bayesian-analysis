@@ -71,9 +71,9 @@ $$
 \begin{aligned}
 t_i &\sim \mathrm{N}(\mu_{\text{age}(i)}, \sigma), \\
 \mu_{\text{age}(i)} &\sim \mathrm{N}(\mu_{\text{unknown}}, \tau), \\
-\mu_{\text{unknown}} &\sim \mathrm{N}(0, 10), \\
-\tau &\sim \mathrm{N}(0, 10), \\
-\sigma &\sim \mathrm{N}(0, 10).
+\mu_{\text{unknown}} &\sim \mathrm{N}(0, 1), \\
+\tau &\sim \mathrm{N}(0, 1), \\
+\sigma &\sim \mathrm{N}(0, 1).
 \end{aligned}
 $$
 
@@ -81,11 +81,11 @@ In the hierarchical model, the variance of the distribution describing $t_i$ is 
 
 # Weakly Prior Choices
 
-...
+In this kind of setting, we make a common assumption that the posterior distribution for $t_i$ is of normal form. We refer to the data for prior information about the mean and variance of this distribution. We observe that the majority of time differences between drivers lie within the interval $[-2.5, 2.5]$, which gives rise to a weakly informative prior distribution for the mean of the distribution describing $t_i$ as $\mathrm{N}(0,1)$. Furthermore, it is evident that the differences between teammates is seldom over one second, which gives rise to a prior distribution for the variance of the distribution describing $t_i$ also as $\mathrm{N}(0,1)$. It turns out that the prior distributions are conjugate for the posterior distribution.
 
 # Stan Code
 
-...
+TODO: Stan codes here
 
 # Running the Stan Code
 
