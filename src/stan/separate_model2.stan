@@ -5,21 +5,37 @@
 // Vector y is the scaled time difference.
 // 
 //
+functions {
+   // if(r_in(3,{1,2,3,4})) will evaluate as 1
+  int r_in(int pos,int[] pos_var) {
+   
+    for (p in 1:(size(pos_var))) {
+       if (pos_var[p]==pos) {
+       // can return immediately, as soon as find a match
+          return 1;
+       } 
+    }
+    return 0;
+  }
+}
+
 data {
   int<lower=0> N;
   int total_length;
   real time[total_length];
   int age[total_length];
   int model_index[total_length];
-
+  int rep_ages[5];
+  int rep_length;
 }
-
 
 parameters {
   real mu[N];
   real<lower=0> sigma[N];
 
 }
+
+
 
 model {
   mu ~ normal(0,1);        //prior
@@ -30,13 +46,27 @@ model {
   }
 }
 
+
+
 generated quantities{
-  real time_pred[N];
-  real log_lik[total_length];
-  for(j in 1:N){
-    time_pred[j] = normal_rng(mu[j], sigma[j]);
+  real yrep[rep_length];
+  int rep_group[rep_length];
+  #real log_lik[total_length];
+  {
+  int  rep_index = 1;
+    for(j in 1:total_length){
+      if(r_in(age[j], rep_ages)) {
+        yrep[rep_index] = normal_rng(mu[model_index[j]], sigma[model_index[j]]);
+        rep_group[rep_index] = age[j];
+        rep_index += 1;
+      }
+    }
   }
-  for(j in 1:total_length){
-    log_lik[j] =  normal_lpdf(time[j] | mu[model_index[j]], sigma[model_index[j]]);
-  }
+  
+  #for(j in 1:total_length){
+  #  log_lik[j] =  normal_lpdf(time[j] | mu[model_index[j]], sigma[model_index[j]]);
+  #}
 }
+
+
+

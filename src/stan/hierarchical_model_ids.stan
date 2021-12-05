@@ -7,17 +7,18 @@
 //
 data {
   int<lower=0> N;
-  int<lower=0> I[N];
-  int<lower=0> max_i;
-  vector[N] time[max_i];
-  int driver_id[max_i, N];
+  int total_length;
+  real time[total_length];
+  int age[total_length];
+  int driver_id[total_length];
   int driver_count;
+  int model_index[total_length];
 }
 
 
 parameters {
   real mu[N];
-  real<lower=0>  sigma;
+  real<lower=0> sigma;
   real<lower=0> tau;
   real mu_mean;
   real a[driver_count];
@@ -25,27 +26,28 @@ parameters {
 
 
 model {
-  mu_mean ~ normal(0,10);        //prior
-  sigma ~ normal(0,10);     //prior
-  tau ~ normal(0,10);
-  mu ~ normal(mu_mean, tau);
-  a ~ normal(0,10);
-  for(j in 1:N){
-    for(i in 1:I[j]){
-      time[i,j] ~ normal(mu[j] + a[driver_id[i,j]], sigma);
-    }
-    
+  mu_mean ~ normal(0,1);    //prior
+  sigma ~ normal(0,1);     //prior
+  tau ~ normal(0,1);       //prior
+  mu ~ normal(mu_mean, tau);     //prior
+  a ~ normal(0,0.1);
+  for(j in 1:total_length){
+    time[j] ~ normal(mu[model_index[j]] + a[driver_id[j]], sigma);
   }
 }
 
 generated quantities{
   real time_pred[N];
-  vector[N] log_lik[max_i];
-  for(j in 1:N){
-      time_pred[j] = normal_rng(mu[j], sigma);
-      for (i in 1:I[j]){
-        log_lik[i,j] = normal_lpdf(time[i,j] | mu[j] + a[driver_id[i,j]], sigma);
-    }
-  }
-    }
+  #real log_lik[total_length];
+  #real log_lik_id[total_length];
+ //change name to y rep
+ for (j in 1:N){
+   time_pred[j] = normal_rng(mu[j], sigma);
+ }
+ #for (j in 1:total_length){
+ # log_lik[j] = normal_lpdf(time[j] | mu[model_index[j]], sigma);
+ #}
+ #for (j in 1:total_length){
+#   log_lik_id[j] = normal_lpdf(time[j] | mu[model_index[j]] + a[driver_id[j]], sigma);
+ #}
 }

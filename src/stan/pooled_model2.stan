@@ -9,6 +9,7 @@ data {
   int<lower=0> N;
   int total_length;
   real time[total_length];
+  int count27;
 }
 
 
@@ -25,11 +26,15 @@ model {
 
 generated quantities{
   real time_pred[N];
-  real log_lik[total_length];
+  real yrep27[count27];
+  #real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu, sigma);
   }
-  for(j in 1:total_length){
-    log_lik[j] =  normal_lpdf(time[j] | mu, sigma);
+  for(j in 1:count27){
+    yrep27[j] = normal_rng(mu, sigma);
   }
+  #for(j in 1:total_length){
+  #  log_lik[j] =  normal_lpdf(time[j] | mu, sigma);
+  #}
 }

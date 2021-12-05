@@ -9,41 +9,36 @@ data {
   int<lower=0> N;
   int total_length;
   real time[total_length];
-  int age[total_length];
   int driver_id[total_length];
   int driver_count;
-  int model_index[total_length];
 }
 
 
 parameters {
-  real mu[N];
-  real<lower=0> sigma[N];
+  real mu;
+  real<lower=0> sigma;
   real a[driver_count];
 }
-
 
 model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
-  a ~ normal(0,0.1);
   for(j in 1:total_length){
-    time[j] ~ normal(mu[model_index[j]] + a[driver_id[j]], sigma[model_index[j]]);
+    time[j] ~ normal(mu + a[driver_id[j]], sigma);
   }
 }
 
 generated quantities{
   real time_pred[N];
-  #real log_lik[total_length];
-  #real log_lik_id[total_length];
- // Compute predictive distribution
- for (j in 1:N){
-   time_pred[j] = normal_rng(mu[j], sigma[j]);
+  real log_lik[total_length];
+  real log_lik_id[total_length];
+  for(j in 1:N){
+    time_pred[j] = normal_rng(mu, sigma);
+  }
+  for(j in 1:total_length){
+    log_lik[j] =  normal_lpdf(time[j] | mu, sigma);
+  }
+  for (j in 1:total_length){
+    log_lik_id[j] = normal_lpdf(time[j] | mu + a[driver_id[j]], sigma);
  }
- #for (j in 1:total_length){
-#   log_lik[j] = normal_lpdf(time[j] | mu[model_index[j]], sigma[model_index[j]]);
-#}
- #for (j in 1:total_length){
-  # log_lik_id[j] = normal_lpdf(time[j] | mu[model_index[j]] + a[driver_id[j]], sigma[model_index[j]]);
- #}
 }

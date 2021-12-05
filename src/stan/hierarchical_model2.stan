@@ -11,7 +11,7 @@ data {
   real time[total_length];
   int age[total_length];
   int model_index[total_length];
-  
+  int count27;
 }
 
 
@@ -35,11 +35,15 @@ model {
 
 generated quantities{
   real time_pred[N];
-  real log_lik[total_length];
+  real yrep27[count27];
+  #real log_lik[total_length];
   for(j in 1:N){
     time_pred[j] = normal_rng(mu[j], sigma);
   }
-  for(j in 1:total_length){
-    log_lik[j] = normal_lpdf(time[j] | mu[model_index[j]], sigma);
+  for(j in 1:count27){
+    yrep27[j] = normal_rng(mu[27-18+1], sigma);
   }
+  #for(j in 1:total_length){
+  #  log_lik[j] = normal_lpdf(time[j] | mu[model_index[j]], sigma);
+  #}
 }
