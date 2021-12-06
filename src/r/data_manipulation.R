@@ -33,8 +33,12 @@ stan_data_id <- list(N = N, total_length = nrow(data), time = data$difference, a
                      rep_ages = y_rep_ages, rep_length = y_rep_length, driver_id = data$teammateId, driver_count = length(unique(data$teammateId)))
 
 fit_separate <- stan(file = "src/stan/separate_model.stan", data = stan_data)
-#fit_hierarchical <- stan(file = "src/stan/hierarchical_model.stan", data = stan_data)
-#fit_pooled <- stan(file = "src/stan/pooled_model.stan", data = stan_data)
+fit_hierarchical <- stan(file = "src/stan/hierarchical_model.stan", data = stan_data)
+fit_pooled <- stan(file = "src/stan/pooled_model.stan", data = stan_data)
+
+fit_separate_dprior <- stan(file = "src/stan/separate_model_dprior.stan", data = stan_data)
+fit_hierarchical_dprior <- stan(file = "src/stan/hierarchical_model_dprior.stan", data = stan_data)
+fit_pooled_dprior <- stan(file = "src/stan/pooled_model_dprior.stan", data = stan_data)
 
 #fit_separate_id <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
 #fit_hierarchical_id <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data_id, iter=5000)
@@ -50,9 +54,13 @@ llfun <- function(data_i, draws) {
 
 #loo_func_separate <- loo(llfun, data = Data, draws = posterior_draws, r_eff = NA)
 
-#loo_mat_separate <- loo(extract_log_lik(fit_separate))
-#loo_mat_hierarchical <- loo(extract_log_lik(fit_hierarchical))
-#loo_mat_pooled <- loo(extract_log_lik(fit_pooled))
+loo_mat_separate <- loo(extract_log_lik(fit_separate))
+loo_mat_hierarchical <- loo(extract_log_lik(fit_hierarchical))
+loo_mat_pooled <- loo(extract_log_lik(fit_pooled))
+
+loo_mat_separate_dprior <- loo(extract_log_lik(fit_separate_dprior))
+loo_mat_hierarchical_dprior <- loo(extract_log_lik(fit_hierarchical_dprior))
+loo_mat_pooled_dprior <- loo(extract_log_lik(fit_pooled_dprior))
 
 #loo_mat_separate_id <- loo(extract_log_lik(fit_separate_id))
 #loo_mat_separate_id_known <- loo(extract(fit_separate_id, pars='log_lik_id')$log_lik_id)
@@ -61,7 +69,7 @@ llfun <- function(data_i, draws) {
 #loo_mat_pooled_id <- loo(extract_log_lik(fit_pooled_id))
 #loo_mat_pooled_id_known <- loo(extract(fit_pooled_id, pars='log_lik_id')$log_lik_id)
 
-yrep_separate <- extract(fit_separate)$yrep
+#yrep_separate <- extract(fit_separate)$yrep
 #yrep_hierarchical <- extract(fit_hierarchical)$yrep
 #yrep_pooled <- extract(fit_pooled)$yrep
 
@@ -73,8 +81,8 @@ yrep_separate <- extract(fit_separate)$yrep
 
 #ppc_dens_overlay_grouped(y, yrep_hierarchical[1:50,], y_rep_groups)
 
-mu_separate_id <- extract(fit_separate_id, pars='mu')$mu
-mu_hierarchical <- extract(fit_hierarchical, pars='mu')$mu
+#mu_separate_id <- extract(fit_separate_id, pars='mu')$mu
+#mu_hierarchical <- extract(fit_hierarchical, pars='mu')$mu
 
 num_ages = length(unique(ages))
 probs_separate_id = vector(mode= 'numeric', length = num_ages)
