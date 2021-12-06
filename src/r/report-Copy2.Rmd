@@ -1,0 +1,270 @@
+---
+title: "foo"
+author: "Anonymous"
+knit: (function(input_file, encoding) { 
+      out_dir <- "../../build";
+      rmarkdown::render(input_file,
+                        encoding=encoding, 
+                        output_file=file.path(dirname(input_file), out_dir, 'report.pdf')); })
+output: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 1
+urlcolor: blue
+bibliography: "`r here::here('src/tex', 'ref.bib')`"
+---
+
+```{r setup, include=FALSE}
+# This chunk sets echo = TRUE as default, that is print all code.
+# knitr::opts_chunk$set can be used to set other notebook generation options, too.
+# include=FALSE inside curly brackets makes this block not be included in the pdf.
+knitr::opts_chunk$set(echo = TRUE)
+library(rstan)
+library(loo)
+library(plyr)
+library(bayesplot)
+library(ggplot2)
+```
+
+# Introduction
+
+Formula One (F1) is the most prestigious auto racing league in the world. The number of drivers in this racing class is only 20, and those taking part could be considered "the best of the best". Given the fierce level of competition, every attribute of the driver could be considered important. An F1 driver must be at least 18 years of age, that is, the participating racers are all adults. It is a well-known fact that motor skills and reflexes of adults deteriorate with age. In this report we explore the relationship between the age and performance of F1 drivers through Bayesian analysis. In particular, we consider and compare three models: separate, pooled, and hierarchical. The models incorporate weakly priors, and related discussion of choices and sensitivity analysis is provided for each model separately. We further conduct posterior predictive analysis and finally provide a discussion on the models and potential future research.
+
+# Data
+TODO: boxplot
+
+Our analysis problem revolves around extracting posterior statistics yielding information about the relationship between a driver's age and performance. An example of such statistic would be the probability that the best age performance-wise lies within a certain range. The raw data is provided by the [@ergast]. For the purposes of our analysis, we conduct an number of preprocessing steps on this dataset. We use only qualifying as the measure of performance and ignore race results in this analysis. In particular, we consider the difference between a driver and his teammate. In F1, a qualifying session consists of three timed periods, called Q1, Q2, and Q3, where 5 drivers are eliminated at the first two periods. From every qualifying for every driver we calculate the difference between a driver and his teammate from the last period they both participated in. To prune out outliers, we ignore cases where this difference is more than 2.5s, as this is rare and likely due to some unusual event unrelated to the driver's capability. We further subtract from this difference the historical mean value of the driver's difference to his teammates during his whole career to get comparable values for each driver that represent how they performed compared to their career average.
+
+The same underlying data has been utilized by various authors. For example, [@nigro2021] examines how odds provided by a neural network model fit to a subset of the data fares against officially provided odds. Related to our analysis, the author notes that the age of the winning driver shows a decreasing linear trend. [@jain2020] on the other hand utilizes logistic regression with $F_1$ score to predict whether or not a driver manages to place on podium, i.e., to attain a top-three position. Similar to us, [@vankesteren2021] conducts a Bayesian analysis. The author models the skill of drivers considering factors including constructor advantages and seasonal constructor form. In contrast, our analysis is solely based on exploring whether or not a driver's age provides meaningful insight on his performance.
+
+# Models
+
+In this section we enumerate and describe the three models we attempt to fit to the data described previously. Let us first define some general prerequisites. Let $N$ denote the size of the dataset. Further, let $\mathcal{I} = \left\{1, 2, \dots, N\right\}$ denote the index set of the dataset, and $\mathcal{A} = \left\{18, 19, \dots, 43\right\}$ the set of driver ages present in the dataset. Now let $\text{age}(\cdot)$ be a mapping from $\mathcal{I}$ to $\mathcal{A}$ yielding the age of the sample at index $i \in \mathcal{I}$.
+
+## Separate
+
+The separate model is formally defined as follows:
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu_{\text{age}(i)}, \sigma_{\text{age}(i)}), \\
+\mu_{\text{age}(i)} &\sim \mathrm{N}(0,1), \\
+\sigma_{\text{age}(i)} &\sim \mathrm{N}(0,1).
+\end{aligned}
+$$
+
+The separate model effectively assumes the defining characteristics of the distribution for $t_i$ are different for each age group.
+
+## Pooled
+
+The pooled model is formally defined as follows:
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu, \sigma), \\
+\mu &\sim \mathrm{N}(0,1), \\
+\sigma &\sim \mathrm{N}(0,1).
+\end{aligned}
+$$
+
+The pooled model simply assumes the characteristics of the distribution generating $t_i$ are independent of driver age.
+
+## Hierarchical
+
+The hierarchical model is defined as follows:
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu_{\text{age}(i)}, \sigma), \\
+\mu_{\text{age}(i)} &\sim \mathrm{N}(\mu_{\text{unknown}}, \tau), \\
+\mu_{\text{unknown}} &\sim \mathrm{N}(0, 1), \\
+\tau &\sim \mathrm{N}(0, 1), \\
+\sigma &\sim \mathrm{N}(0, 1).
+\end{aligned}
+$$
+
+In the hierarchical model, the variance of the distribution describing $t_i$ is assumed the same for each age group. However, the mean of this distribution is assumed to be dependent on age. The parameters of the distribution yielding the mean of a particular age group are further sampled from the hyperpriors described above.
+
+## Separate with additional parameter
+
+Additionally, we consider following separate model with additional parameter corresponding to teammate of the driver: 
+
+$$
+\begin{aligned}
+t_i &\sim \mathrm{N}(\mu_{\text{age}(i)} + \alpha_{\text{teammate(i)}}, \sigma_{\text{age}(i)}), \\
+\mu_{\text{age}(i)} &\sim \mathrm{N}(0,1), \\
+\sigma_{\text{age}(i)} &\sim \mathrm{N}(0,1).
+\end{aligned}
+$$
+Here, the $\alpha$ parameter is meant to capture the effect that teammate's level has to the expected difference for driver of certain age. If driver has a very strong teammate, his qualifying differences to the teammate are expected to be larger than usual and vice versa. We also briefly tested pooled and hierarchical model with the additional parameter but didn't see it as necessary to include the full analysis of those models to this report for since their comparison to each other is very similar to the comparison of the models without the parameter, and the comparison between one model without the parameter and one with is enough to see the effect of the parameter. Also, as mentioned in the convergence evaluation section, we were not able to achieve satisfying convergence with the hierarchical model with the additional parameter.
+
+# Weakly Prior Choices
+
+In this kind of setting, we make a common assumption that the posterior distribution for $t_i$ is of normal form. We refer to the data for prior information about the mean and variance of this distribution. After preprocessing, we have that the time differences between drivers lie within the interval $[-2.5, 2.5]$, which gives rise to a weakly informative prior distribution for the mean of the distribution describing $t_i$ as $\mathrm{N}(0,1)$. Furthermore, it is evident that the differences between teammates is seldom over one second, which gives rise to a prior distribution for the variance of the distribution describing $t_i$ also as $\mathrm{N}(0,1)$. It turns out that the prior distributions are conjugate for the posterior distribution.
+
+# Stan Code
+
+Separate model: 
+
+```{r}
+cat(readLines('../stan/separate_model.stan'), sep = '\n')
+```
+
+Pooled model: 
+
+```{r}
+cat(readLines('../stan/pooled_model.stan'), sep = '\n')
+```
+
+Hierarchical model: 
+
+```{r}
+cat(readLines('../stan/hierarchical_model.stan'), sep = '\n')
+```
+
+Separate model with additional parameter: 
+
+```{r}
+cat(readLines('../stan/separate_model_ids.stan'), sep = '\n')
+```
+
+# Running the Stan Code
+
+```{r}
+data = read.csv(file ="../../data/quali_differences_processed.csv")
+data$teammateId = mapvalues(data$teammateId, unique(data$teammateId), 1:length(unique(data$teammateId)))
+data$model_index = data$age-18+1
+
+
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write=TRUE)
+
+ages = data$age
+N = length(unique(ages))
+y_rep_ages = c(19, 27, 41) #ages to generate replicated datasets for model evaluation
+y_rep_length = sum(data$age %in% y_rep_ages)
+y = data[data$age %in% y_rep_ages,]$difference
+
+y_rep_groups = vector(mode="integer", length=y_rep_length)
+rep_index = 1
+for(j in 1:nrow(data)){
+  if(ages[j] %in% y_rep_ages) {
+    y_rep_groups[rep_index] = ages[j]
+    rep_index = rep_index + 1
+  }
+}
+
+stan_data <- list(N = N, total_length = nrow(data), time = data$difference, age = ages, min_age = min(ages), model_index=data$model_index,
+                  rep_ages = y_rep_ages, rep_length = y_rep_length)
+stan_data_id <- list(N = N, total_length = nrow(data), time = data$difference, age = ages, min_age = min(ages), model_index=data$model_index, 
+                     rep_ages = y_rep_ages, rep_length = y_rep_length, driver_id = data$teammateId, driver_count = length(unique(data$teammateId)))
+```
+
+
+```{r, cache=TRUE, cache.lazy=FALSE}
+fit_separate <- stan(file = "../stan/separate_model.stan", data = stan_data)
+fit_hierarchical <- stan(file = "../stan/hierarchical_model.stan", data = stan_data)
+fit_pooled <- stan(file = "../stan/pooled_model.stan", data = stan_data)
+
+fit_separate_id <- stan(file = "../stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
+
+
+```
+
+# Convergence Evaluation
+
+According to [@vehtari2021], in the context of MCMC sampling, it is prudent to run at least four chains, which Stan performs by default. The authors further guide to accept the sample on the condition that $\widehat{R} < 1.05$, which we observe here.
+
+Fit for each model showing $\widehat{R}$ and ESS:
+```{r}
+#Separate
+print(fit_separate, pars=c('mu', 'sigma'))
+
+#hierarchical
+print(fit_hierarchical, pars=c('mu', 'sigma'))
+
+#pooled
+print(fit_pooled, pars=c('mu', 'sigma'))
+
+#Separate_id (separate with additional parameter)
+print(fit_separate_id, pars=c('mu', 'sigma', 'a'))
+```
+
+As we can see $\widehat{R}$ are all $<1.05$ indicating the chains have converged. Considering the length of the dataset $n=8552$, also ESS (n_eff) look good for every estimate. Divergent transitions and tree depths for each model can be seen here:
+
+```{r}
+#separate
+summary(do.call(rbind, get_sampler_params(fit_separate, inc_warmup = FALSE)))
+
+#hierarchical
+summary(do.call(rbind, get_sampler_params(fit_hierarchical, inc_warmup = FALSE)))
+
+#pooled
+summary(do.call(rbind, get_sampler_params(fit_pooled, inc_warmup = FALSE)))
+
+#separate with additional parameter
+summary(do.call(rbind, get_sampler_params(fit_separate_id, inc_warmup = FALSE)))
+```
+
+
+As we can see, there are no divergent transitions and treep depth is reasonable since it's maximum  value is easily under 10 for each model. 
+
+Initially stan warned about few divergent transitions and low ESS for separate model with additional parameter, so we increased the chaing length to 6000 which fixed the problem. We also attempted to fit the hierarchical model with additional parameter but it had several problems with fitting including divergent transitions, big $\widehat{R}$ and low ESS which we were not able to fix by increasing chain length and increasing the adapt_delta parameter for stan, indicating that it's not possible to fit the model at least with our computational resources and within a reasonable amount of time.
+
+# Posterior Predictive Checks
+
+Here we plot density plots for replicated dataset $y_{\text{rep}}$ together with the observed data $y$ for three different ages, 19, 27 and 41. The age pools 19 and 41 are very sparse, containting only 48 and 57 samples, respectively, while age 27 contains 594 samples.
+
+```{r}
+yrep_separate <- extract(fit_separate)$yrep
+yrep_hierarchical <- extract(fit_hierarchical)$yrep
+yrep_pooled <- extract(fit_pooled)$yrep
+yrep_separate_id <- extract(fit_separate_id, pars='yrep')$yrep
+yrep_separate_id_known <- extract(fit_separate_id, pars='yrep_id')$yrep_id
+
+ppc_dens_overlay_grouped(y, yrep_separate[1:50,], y_rep_groups) + ggtitle('Separate model')
+ppc_dens_overlay_grouped(y, yrep_hierarchical[1:50,], y_rep_groups) + ggtitle('Hierarchical model')
+ppc_dens_overlay_grouped(y, yrep_pooled[1:50,], y_rep_groups) + ggtitle('Pooled model')
+ppc_dens_overlay_grouped(y, yrep_separate_id[1:50,], y_rep_groups) + ggtitle('Separate_id model')
+ppc_dens_overlay_grouped(y, yrep_separate_id_known[1:50,], y_rep_groups) + ggtitle('Separate_id model with known teammate')
+```
+
+Based on these plots, hierarchical and separate model seem to have fit reasonably well to the data, while pooled seems to have pretty clear problems especially in age 19. This is expected since we expect age to have some effect to average results. Though, even if it didn't have any effect, it's still possible that the different age pools have differing distributions just by chance, especially as some of them are very sparse, in which case the hierarchical and separate model would fit better anyway. This would be a case of overfit if the reality is that age does not have any effect.
+
+
+
+
+# Model Comparison
+
+```{r}
+loo_mat_separate <- loo(extract_log_lik(fit_separate))
+loo_mat_hierarchical <- loo(extract_log_lik(fit_hierarchical))
+loo_mat_pooled <- loo(extract_log_lik(fit_pooled))
+loo_mat_separate_id <- loo(extract_log_lik(fit_separate_id))
+loo_mat_separate_id_known <- loo(extract(fit_separate_id, pars='log_lik_id')$log_lik_id)
+
+loo_compare(loo_mat_hierarchical, loo_mat_pooled, loo_mat_separate, loo_mat_separate_id, loo_mat_separate_id_known)
+```
+
+
+
+# Predictive Performance Assessment
+
+...
+
+# Prior Sensitivity Analysis
+
+...
+
+# Discussion
+
+The dataset still has some dependency to the manufacturer of the car, which could b further investigated to improve the models. Further more the dataset was unequally distributed by the age of the river, thus both ends of the age distributions might not fully reflect the age of the driver effect on performance but rather about few individual drivers performance. 
+
+
+# Conclusions and Self-Reflections
+
+The report shows that the hierarchical separate and separate with driver id all capture the all the distributions well. The pooled model is having some issues to the ends of the models, which could be because the younger and older drivers have bigger difference compared to the other aged drivers. 
+
+We further deepened our understanding with the bayesian analysis process and how to use these skill to a real data set. 
+
+# References
