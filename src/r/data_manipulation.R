@@ -33,14 +33,14 @@ stan_data_id <- list(N = N, total_length = nrow(data), time = data$difference, a
                      rep_ages = y_rep_ages, rep_length = y_rep_length, driver_id = data$teammateId, driver_count = length(unique(data$teammateId)))
 
 #fit_separate <- stan(file = "src/stan/separate_model.stan", data = stan_data)
-#fit_hierarchical <- stan(file = "src/stan/hierarchical_model.stan", data = stan_data)
+fit_hierarchical <- stan(file = "src/stan/hierarchical_model.stan", data = stan_data)
 #fit_pooled <- stan(file = "src/stan/pooled_model.stan", data = stan_data)
 
 #fit_separate_dprior <- stan(file = "src/stan/separate_model_dprior.stan", data = stan_data)
 #fit_hierarchical_dprior <- stan(file = "src/stan/hierarchical_model_dprior.stan", data = stan_data)
 #fit_pooled_dprior <- stan(file = "src/stan/pooled_model_dprior.stan", data = stan_data)
 
-fit_separate_id <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
+#fit_separate_id <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
 #fit_hierarchical_id <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data_id, iter=5000)
 #fit_pooled_id <- stan(file = "src/stan/pooled_model_ids.stan", data = stan_data_id)
 
@@ -104,8 +104,39 @@ for (i in 1:num_ages) {
 probs_df <- data.frame(probs/sum(probs), sort(unique(ages)))
 colnames(probs_df) <-c('prob', 'age')
 
-#print(fit_separate, pars=c('mu', 'sigma'))
-#arr <- as.array(fit_separate_id, pars='mu')
-#mcmc_intervals(arr)
-#params_a <- as.array(fit_separate_id, pars=c('a[1]', 'a[3]', 'a[4]', 'a[11]', 'a[18]', 'a[21]', 'a[30]', 'a[57]', 'a[123]', 'a[141]', 'a[155]', 'a[131]'))
-#mcmc_intervals(params_a) + scale_y_discrete(labels= c('Schumacher', 'par'))
+
+
+
+find_parnames <- function(teammate_names) {
+  teammate_ids <- c()
+  for (name in teammate_names) {
+    teammate_id <- unique(data[data$teammateName == name,]$teammateId)
+    teammate_ids <- c(teammate_ids, teammate_id)
+  }
+  parnames <- lapply(teammate_ids, function(x) paste('a[', as.character(x), ']', sep=''))
+  return(parnames)
+}
+
+#unique_teammates <- data[!duplicated(data[,'teammateName']),]
+
+#drivers <- c('stroll', 'lehto', 'maldonado', 'bottas', 'irvine','raikkonen', 'hakkinen', 'max_verstappen', 'hamilton', 'michael_schumacher')
+#pars <- find_parnames(drivers)
+#params_a <- as.array(fit_separate_id, pars=pars)
+#mcmc_areas(params_a) + scale_y_discrete(labels = drivers)
+#mcmc_areas(params_a) + scale_y_discrete(labels= c('Lance Stroll', 'JJ Lehto', 'Pastor Maldonado', 'Valtteri Bottas', 'Eddie Irvine', 'Kimi Räikkönen', 'Mika Häkkinen', 'Max Verstappen', 'Lewis Hamilton', 'Michael Schumacher')) + theme_bw(base_size=16)
+
+y_ticks = c()
+
+for (i in 18:43) {
+  if (i%%2)
+    y_ticks = c(y_ticks, bquote(mu[.(i)]))
+  else
+    y_ticks = c(y_ticks, '')
+}
+
+# parameters in wrong order (for plotting) when extracting with just 'mu' so need to extract everything separately in right order
+#mu_numbers <- c(1:26)
+#mu_names <- lapply(mu_numbers, function(x) paste('mu[', as.character(x), ']', sep=''))
+#mu_pars <- as.array(fit_separate_id, pars=mu_names)
+#mcmc_intervals(mu_pars) + scale_y_discrete(labels= y_ticks) + theme_bw(base_size=20)
+
