@@ -45,7 +45,7 @@ parameters {
 model {
   mu ~ normal(0,1);        //prior
   sigma ~ normal(0,1);     //prior
-  a ~ normal(0,0.1);       //prior
+  a ~ normal(0,0.5);       //prior
   for(j in 1:total_length){
     time[j] ~ normal(mu[model_index[j]] + a[driver_id[j]], sigma[model_index[j]]);
   }
