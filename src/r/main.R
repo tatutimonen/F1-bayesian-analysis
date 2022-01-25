@@ -38,8 +38,8 @@ fit_pooled <- stan(file = "src/stan/pooled_model.stan", data = stan_data)
 
 
 fit_separate_id <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
-fit_hierarchical_id <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data_id, iter=5000)
-fit_pooled_id <- stan(file = "src/stan/pooled_model_ids.stan", data = stan_data_id)
+#fit_hierarchical_id <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data_id, iter=5000)
+#fit_pooled_id <- stan(file = "src/stan/pooled_model_ids.stan", data = stan_data_id)
 
 llfun <- function(data_i, draws) {
   model_index = data_i$model_index
@@ -53,8 +53,8 @@ loo_mat_pooled <- loo(extract_log_lik(fit_pooled))
 
 
 loo_mat_separate_id_known <- loo(extract(fit_separate_id, pars='log_lik_id')$log_lik_id)
-loo_mat_hierarchical_id_known <- loo(extract(fit_hierarchical_id, pars='log_lik_id')$log_lik_id)
-loo_mat_pooled_id_known <- loo(extract(fit_pooled_id, pars='log_lik_id')$log_lik_id)
+#loo_mat_hierarchical_id_known <- loo(extract(fit_hierarchical_id, pars='log_lik_id')$log_lik_id)
+#loo_mat_pooled_id_known <- loo(extract(fit_pooled_id, pars='log_lik_id')$log_lik_id)
 
 yrep_separate <- extract(fit_separate)$yrep
 yrep_hierarchical <- extract(fit_hierarchical)$yrep
@@ -62,7 +62,7 @@ yrep_pooled <- extract(fit_pooled)$yrep
 
 
 yrep_separate_id_known <- extract(fit_separate_id, pars='yrep_id')$yrep_id
-yrep_hierarchical_id_known <- extract(fit_hierarchical_id, pars='yrep_id')$yrep_id
+#yrep_hierarchical_id_known <- extract(fit_hierarchical_id, pars='yrep_id')$yrep_id
 
 # Use yrep of any model to plot for that model
 ppc_dens_overlay_grouped(y, yrep_separate_id_known[1:50,], y_rep_groups) + theme_bw(base_size=18)
@@ -102,6 +102,7 @@ unique_teammates <- data[!duplicated(data[,'teammateName']),]
 
 drivers <- c('stroll', 'lehto', 'maldonado', 'bottas', 'irvine','raikkonen', 'hakkinen', 'max_verstappen', 'hamilton', 'michael_schumacher')
 pars <- find_parnames(drivers)
+
 params_a <- as.array(fit_separate_id, pars=pars)
 mcmc_areas(params_a) + scale_y_discrete(labels = drivers)
 #mcmc_areas(params_a) + scale_y_discrete(labels= c('Lance Stroll', 'JJ Lehto', 'Pastor Maldonado', 'Valtteri Bottas', 'Eddie Irvine', 'Kimi Räikkönen', 'Mika Häkkinen', 'Max Verstappen', 'Lewis Hamilton', 'Michael Schumacher')) + theme_bw(base_size=16)
