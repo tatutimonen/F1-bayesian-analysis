@@ -36,10 +36,10 @@ fit_separate <- stan(file = "src/stan/separate_model.stan", data = stan_data)
 fit_hierarchical <- stan(file = "src/stan/hierarchical_model.stan", data = stan_data)
 fit_pooled <- stan(file = "src/stan/pooled_model.stan", data = stan_data)
 
-
+# Comment out some of the fits if not needed, to get faster run
 fit_separate_id <- stan(file = "src/stan/separate_model_ids.stan", data = stan_data_id, iter=6000)
-#fit_hierarchical_id <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data_id, iter=5000)
-#fit_pooled_id <- stan(file = "src/stan/pooled_model_ids.stan", data = stan_data_id)
+fit_hierarchical_id <- stan(file = "src/stan/hierarchical_model_ids.stan", data = stan_data_id, iter=5000)
+fit_pooled_id <- stan(file = "src/stan/pooled_model_ids.stan", data = stan_data_id)
 
 llfun <- function(data_i, draws) {
   model_index = data_i$model_index
@@ -53,8 +53,9 @@ loo_mat_pooled <- loo(extract_log_lik(fit_pooled))
 
 
 loo_mat_separate_id_known <- loo(extract(fit_separate_id, pars='log_lik_id')$log_lik_id)
-#loo_mat_hierarchical_id_known <- loo(extract(fit_hierarchical_id, pars='log_lik_id')$log_lik_id)
-#loo_mat_pooled_id_known <- loo(extract(fit_pooled_id, pars='log_lik_id')$log_lik_id)
+loo_mat_hierarchical_id_known <- loo(extract(fit_hierarchical_id, pars='log_lik_id')$log_lik_id)
+loo_mat_pooled_id_known <- loo(extract(fit_pooled_id, pars='log_lik_id')$log_lik_id)
+#loo_compare(loo_mat_hierarchical, loo_mat_pooled, loo_mat_separate, loo_mat_separate_id, loo_mat_separate_id_known)
 
 yrep_separate <- extract(fit_separate)$yrep
 yrep_hierarchical <- extract(fit_hierarchical)$yrep
@@ -117,9 +118,9 @@ for (i in 18:43) {
 }
 
 # parameters in wrong order (for plotting) when extracting with just 'mu' so need to extract everything separately in right order
-#mu_numbers <- c(1:26)
-#mu_names <- lapply(mu_numbers, function(x) paste('mu[', as.character(x), ']', sep=''))
-#mu_pars <- as.array(fit_separate_id, pars=mu_names)
-#mcmc_intervals(mu_pars) + scale_y_discrete(labels= y_ticks) + theme_bw(base_size=20)
+mu_numbers <- c(1:26)
+mu_names <- lapply(mu_numbers, function(x) paste('mu[', as.character(x), ']', sep=''))
+mu_pars <- as.array(fit_separate_id, pars=mu_names)
+mcmc_intervals(mu_pars) + scale_y_discrete(labels= y_ticks) + theme_bw(base_size=20)
 
 
