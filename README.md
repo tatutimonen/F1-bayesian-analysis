@@ -21,7 +21,7 @@ The basic idea in the analysis was to divide this data to age groups and fit a s
 
 ![alt text](https://github.com/timonent/bda-project/blob/main/plots/teammate_boxplot.png?raw=true)
 
-This is a boxplot showing the distribution of the data in each age group. A slight trend can be seen here where performance seems to be increasing until around age 27 and then starts to decrease.  
+Boxplot above shows the distribution of the data in each age group. A slight trend can be seen here where performance seems to be increasing until around age 27 and then starts to decrease.  
 
 ----
 
