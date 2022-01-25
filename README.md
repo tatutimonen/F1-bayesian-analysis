@@ -3,7 +3,7 @@
 
   
 
-This is a project analyzing the effect of age on F1 drivers qualifying performance compared to his teammate.
+This is a project analyzing the effect of age on F1 driver's qualifying performance against his teammate.
 
   
 
@@ -19,9 +19,9 @@ The basic idea in the analysis was to divide this data to age groups and fit a s
 
   
 
-(boxplot)
+![alt text](https://github.com/timonent/bda-project/blob/main/plots/teammate_boxplot.png?raw=true)
 
-  
+This is a boxplot showing the distribution of the data in each age group. A slight trend can be seen here where performance seems to be increasing until around age 27 and then starts to decrease.  
 
 ----
 
@@ -49,7 +49,7 @@ where <i>t<sub>i</sub></i> is the time difference on data row <i>i</i>, <i>μ<su
 
 ![alt text](https://github.com/timonent/bda-project/blob/main/plots/age_means.png?raw=true)
 
-Similar trend as in the earlier boxplot of the data can be seen here. Looking at this, the performance seems to get better until the age 27 and get worse after. The posterior probability of the mean parameter of age gropu 27 being the best was around 92%. 
+Similar trend as in the earlier boxplot of the data can be seen here but more clearly. The performance seems to get better until the age 27 and get worse after. The posterior probability of the mean parameter of age group 27 being the best was around 92%. 
 
 Here is another intresting plot showing the distribution of <i>α</i> parameters of some drivers:
 
