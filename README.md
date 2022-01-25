@@ -51,7 +51,7 @@ where <i>t<sub>i</sub></i> is the time difference on data row <i>i</i>, <i>μ<su
 
 Similar trend as in the earlier boxplot of the data can be seen here. Looking at this, the performance seems to get better until the age 27 and get worse after. The posterior probability of the mean parameter of age gropu 27 being the best was around 92%. 
 
-Here is another intresting plot showing the distribution <i>α</i> parameters of some drivers:
+Here is another intresting plot showing the distribution of <i>α</i> parameters of some drivers:
 
 ![alt text](https://github.com/timonent/bda-project/blob/main/plots/teammate_plot.png?raw=true)
   
