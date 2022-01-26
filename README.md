@@ -38,7 +38,7 @@ Here, <i>t<sub>i</sub></i> denotes the time difference on data row <i>i</i>, <i>
 
  <p align="center">
    <img src="plots/teammate_plot.png" width="100%" height=auto>
-   <p align="center">Figure 3: The distribution of the <i>α</i> parameters for some renowned drivers.</p>
+   <p align="center">Figure 3: The distribution of the <i>α</i> parameters for some renowned drivers</p>
 </p>
 
 ----
