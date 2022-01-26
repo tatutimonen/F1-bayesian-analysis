@@ -1,6 +1,6 @@
 ## The Effect of a Formula One Driver's Age on their Performance: A Bayesian Analysis
 
-In this project we conduct a Bayesian analysis to study the effect of an F1 driver's age on their qualifying performance against their teammate. The data used in this analysis is provided by the [Ergast Developer API](http://ergast.com/mrd/).
+In this project we conduct a Bayesian analysis to study the effect of an F1 driver's age on their qualifying performance against their teammate. The data used in this analysis was provided by the [Ergast Developer API](http://ergast.com/mrd/).
 
 ----
 
