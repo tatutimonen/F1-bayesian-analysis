@@ -45,4 +45,4 @@ Here, <i>t<sub>i</sub></i> denotes the time difference on data row <i>i</i>, <i>
 
 ### Authors
 
-Miro Kaarela ([mkaarela](https://github.com/mkaarela)), Roope Kausiala ([AdmiralBulldog](https://github.com/AdmiralBulldog)), Tatu Timonen ([tatutimonen](https://github.com/timonent))
+Miro Kaarela ([mkaarela](https://github.com/mkaarela)), Roope Kausiala ([AdmiralBulldog](https://github.com/AdmiralBulldog)), Tatu Timonen ([timonent](https://github.com/timonent))
