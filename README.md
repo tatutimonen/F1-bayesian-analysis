@@ -25,7 +25,7 @@ We evaluated multiple different models and concluded the most useful one to be a
   <img src="https://latex.codecogs.com/svg.image?\begin{aligned}t_i&space;&\sim&space;\mathrm{N}(\mu_{\text{age}(i)}&space;&plus;&space;\alpha_{\text{teammate}(i)},&space;\sigma_{\text{age}(i)}),&space;\\\mu_{\text{age}(i)}&space;&\sim&space;\mathrm{N}(0,1)&space;\\&space;\sigma_{\text{age}(i)}&space;&\sim&space;\mathrm{N}(0,1),&space;\\\alpha_{\text{teammate}(i)}&space;&\sim&space;\mathrm{N}(0,&space;0.5).\end{aligned}"/>
 </p>
 
-Here, <i>t<sub>i</sub></i> denotes the time difference on data row <i>i</i>, <i>μ</i><sub>age(<i>i</i>)</sub> and <i>σ</i><sub>age(<i>i</i>)</sub> are the mean and standard deviation parameters of the age group corresponding the driver of that row (age of that driver), and <i>α</i><sub>teammate(<i>i</i>)</sub> is a parameter corresponding to the teammate of the driver of that row. Each driver in the dataset has their own <i>α</i> parameter. The purpose of this parameter is to shift the expected difference to teammate based on how good the teammate is. 
+Here, $t_i$ denotes the time difference on data row $i$, $\mu_{\mathrm{age}(i)}$ and $\sigma_{\mathrm{age}(i)}$ are the mean and standard deviation parameters of the age group corresponding the driver of that row (age of that driver), and $\alpha_{\mathrm{teammate}(i)}$ is a parameter corresponding to the teammate of the driver of that row. Each driver in the dataset has their own $\alpha$ parameter. The purpose of this parameter is to shift the expected difference to teammate based on how good the teammate is. 
 
 ----
 
@@ -33,12 +33,12 @@ Here, <i>t<sub>i</sub></i> denotes the time difference on data row <i>i</i>, <i>
  
  <p align="center">
    <img src="plots/age_means.png" width="100%" height=auto>
-   <p align="center">Figure 2: The probability distribution of the mean parameter for each age. Similar trend observations can be done as previously. The posterior probability of the mean parameter of age group 27 being the best was around 92%.</p>
+   <p align="center">Figure 2: The probability distribution of the mean parameter for each age. Similar trend observations can be made as previously. The posterior probability of the mean parameter of age group 27 being the best was around 92%.</p>
 </p>
 
  <p align="center">
    <img src="plots/teammate_plot.png" width="100%" height=auto>
-   <p align="center">Figure 3: The distribution of the <i>α</i> parameters for some renowned drivers</p>
+   <p align="center">Figure 3: The distribution of the $\alpha$ parameters for some renowned drivers</p>
 </p>
 
 ----
