@@ -45,4 +45,4 @@ Here, $t_i$ denotes the time difference on data row $i$, $\mu_{\mathrm{age}(i)}$
 
 ## Authors
 
-Miro Kaarela ([mkaarela](https://github.com/mkaarela)), Roope Kausiala ([AdmiralBulldog](https://github.com/AdmiralBulldog)), Tatu Timonen ([timonent](https://github.com/tatutimonen))
+Miro Kaarela ([mkaarela](https://github.com/mkaarela)), Roope Kausiala ([AdmiralBulldog](https://github.com/AdmiralBulldog)), Tatu Timonen ([tatutimonen](https://github.com/tatutimonen))
