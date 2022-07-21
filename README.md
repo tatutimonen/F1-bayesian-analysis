@@ -1,10 +1,10 @@
-## The Effect of an F1 Driver's Age on their Performance: A Bayesian Analysis
+# The Effect of an F1 Driver's Age on their Performance: A Bayesian Analysis
 
 We conduct a Bayesian analysis to study the effect of an F1 driver's age on their qualifying performance against their teammate. The data used in this analysis was provided by the [Ergast Developer API](http://ergast.com/mrd/).
 
 ----
 
-### Data
+## Data
 
 We consider the difference of a driver's lap time and his teammate's lap time in the last session (Q1/Q2/Q3) they both participated in as a measure of performance. Further, the career average of a driver's difference to his teammate is substracted from this value to get a "normalized" value that represents how well the driver performed compared to his career average.
 
@@ -17,7 +17,7 @@ The basic idea in the analysis is to divide this data to age groups and fit a se
 
 ----
 
-### Model
+## Model
 
 We evaluated multiple different models and concluded the most useful one to be a separate normal model with an additional parameter accounting for the effect of teammate to be the best, which can be formulated as follows:
 
@@ -29,7 +29,7 @@ Here, $t_i$ denotes the time difference on data row $i$, $\mu_{\mathrm{age}(i)}$
 
 ----
 
-### Results
+## Results
  
  <p align="center">
    <img src="plots/age_means.png" width="100%" height=auto>
@@ -43,6 +43,6 @@ Here, $t_i$ denotes the time difference on data row $i$, $\mu_{\mathrm{age}(i)}$
 
 ----
 
-### Authors
+## Authors
 
-Miro Kaarela ([mkaarela](https://github.com/mkaarela)), Roope Kausiala ([AdmiralBulldog](https://github.com/AdmiralBulldog)), Tatu Timonen ([timonent](https://github.com/timonent))
+Miro Kaarela ([mkaarela](https://github.com/mkaarela)), Roope Kausiala ([AdmiralBulldog](https://github.com/AdmiralBulldog)), Tatu Timonen ([timonent](https://github.com/tatutimonen))
